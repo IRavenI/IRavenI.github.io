@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Алфавит</title>
+<link rel="SHORTCUT ICON" href="assets/logo.png" type="image/png">
+<style type="text/css">
+<!--
+body {
+	font: 100%/1.4 Verdana, Arial, Helvetica, sans-serif;
+	margin: 0;
+	padding: 0;
+	color: #000;
+	background-image: url(assets/background.jpg);
+}
+
+/* ~~ Селекторы элементов/тегов ~~ */
+ul, ol, dl { /* Из-за различий между браузерами рекомендуется обнулять поля в списках. Для согласованности можно указать нужные величины либо здесь, либо в элементах списка (LI, DT, DD), которые они содержат. Помните, что сделанное здесь последовательно включается в список .nav, если только не будет прописан более конкретный селектор. */
+	padding: 0;
+	margin: 0;
+}
+h1, h2, h3, h4, h5, h6, p {
+	margin-top: 0;	 /* удаление верхнего поля позволяет обойти проблему выхода полей за границы содержащего их контейнера DIV. Оставшееся нижнее поле отделит его от любых последующих элементов. */
+	padding-right: 15px;
+	padding-left: 15px; /* добавление боковых полей к элементам внутри контейнеров DIV, а не к самим контейнерам избавляет от необходимости расчетов рамочной модели. В качестве альтернативы можно использовать вложенный контейнер DIV с боковыми полями. */
+	font-family: Georgia, "Times New Roman", Times, serif;
+}
+a img { /* этот селектор убирает стандартную синюю рамку, которая появляется у изображений в некоторых браузерах, если вокруг изображения есть ссылка */
+	border: none;
+}
+
+/* ~~ Оформление ссылок на вашем сайте должно оставаться в этом порядке, включая группу селекторов, создающих эффект наведения. ~~ */
+a:link {
+	color:#414958;
+	text-decoration: underline; /* если только ссылки не должны выглядеть исключительно своеобразно, то для быстрого зрительного распознавания рекомендуется использовать подчеркивание */
+}
+a:visited {
+	color: #4E5869;
+	text-decoration: underline;
+}
+a:hover, a:active, a:focus { /* эта группа селекторов обеспечивает пользователю, работающему с клавиатурой, такие же возможности наведения, как и при использовании мыши. */
+	text-decoration: none;
+}
+
+/* ~~ этот контейнер окружает все остальные контейнеры DIV, задавая их ширину на процентной основе ~~ */
+.container {
+	width: 80%;
+	max-width: 1260px;/* желательно задать максимальную ширину, чтобы макет не стал слишком широким на большом экране. Это повышает удобство чтения строк. В IE6 это объявление не соблюдается. */
+	min-width: 780px;/* желательно задать минимальную ширину, чтобы макет не стал слишком узким. Это повышает удобство чтения строк в боковых столбцах. В IE6 это объявление не соблюдается. */
+	background-color: #FFF;
+	margin: 0 auto; /* автоматическое задание величин по бокам в совокупности с шириной центрирует макет. Это необязательно, если ширина контейнера составляет 100 %. */
+}
+
+/* ~~верхнему колонтитулу не задана ширина. Он растянется по всей ширине макета. Он содержит заполнитель для изображения, который должен быть заменен логотипом по ссылке~~ */
+.header {
+	background-color: #CCC;
+	border: 6px;
+	border-radius: 0px 0px 25px 25px;
+}
+
+/* ~~ Информация по макету. ~~ 
+
+1) Поля размещены только вверху и/или внизу DIV. Элементы в этом DIV имеют боковые поля. Это избавляет пользователя от необходимости расчетов рамочной модели. Помните, что при добавлении боковых полей или границы к самому DIV их ширина будет добавлена к задаваемой ширине, что образует "полную" ширину. Кроме того, можно удалить поля элемента в DIV и поместить внутри него второй DIV без ширины и с необходимыми по проекту полями.
+
+*/
+.content {
+	padding: 10px 0;
+}
+
+/* ~~ Этот сгруппированный селектор выдает списки в пространстве .content ~~ */
+.content ul, .content ol { 
+	padding: 0 15px 15px 40px; /* это поле зеркально повторяет правое поле в правиле для заголовков и параграфов выше. Внизу поле помещено как граница между элементами списков, а слева — как отступ. Поля можно настраивать по желанию. */
+}
+
+/* ~~ Нижний колонтитул ~~ */
+.footer {
+	background-repeat: repeat-x;
+	border-top-width: medium;
+	border-right-width: medium;
+	border-bottom-width: medium;
+	border-left-width: medium;
+	padding: 10px;
+	background-color: #CCCCCC;
+	border: 6px;
+	border-radius: 25px 25px 0px 0px;
+}
+
+/* ~~ прочие классы float/clear ~~ */
+.fltrt {  /* этот класс можно использовать для обтекания элемента справа на странице. Обтекаемый элемент должен предшествовать элементу, с которым он должен находиться рядом на странице. */
+	float: right;
+	margin-left: 8px;
+}
+.fltlft { /* этот класс можно использовать для обтекания элемента слева на странице. Обтекаемый элемент должен предшествовать элементу, с которым он должен находиться рядом на странице. */
+	float: left;
+	margin-right: 8px;
+}
+.clearfloat { /* этот класс можно поместить в теге <br /> или в пустом блоке DIV в качестве конечного элемента, следующего за последним обтекаемым DIV (внутри #container), если .#footer удален или извлечен из #container */
+	clear:both;
+	height:0;
+	font-size: 1px;
+	line-height: 0px;
+}
+   INPUT.text {
+    border: 1px solid #ccc; /* Исходная рамка вокруг поля */
+    width: 80%; /* Ширина поля */ 
+   }
+   INPUT.text:focus {
+    border: 1px solid #39c; /* Рамка при получении фокуса */
+   }
+.subscription-button {
+	font-family: Shanghai;
+	font-size: 20px;
+	text-transform: none;
+	font-variant: normal;
+	background-color: #CCC;
+	border: 6px;
+	border-radius: 25px;
+}
+-->
+</style>
+<link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+
+<div class="container">
+  <div class="header"><a href="index.html"><img src="assets/logo.png" alt="Место для логотипа" name="Insert_logo" width="100" height="100" class="fltlft" id="Insert_logo" display:block;" /></a> 
+    <!-- end .header -->Блог непутёвого япониста</div>
+  <div class="content">
+    <table width="100%" height="61" border="0">
+      <tr>
+        <th width="29%" class="MainMenuButton" scope="col"><a href="blogmap.html">Навигация по блогу</a></th>
+        <th width="39%" class="MainMenuButton" scope="col"><a href="resources.html">Полезные ресурсы</a></th>
+        <th width="32%" class="MainMenuButton" scope="col"><a href="aboutme.html">Рассылка</a></th>
+      </tr>
+    </table>
+    <p>&nbsp;</p>
+    <center>
+      <h1>Алфавит<br />
+      </h1>
+      <h2>Катакана</h2>
+      <p><audio id="a" src="assets/voice/a.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('a').play();">ア</button> 
+      <audio id="i" src="assets/voice/i.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('i').play();">イ</button>
+      <audio id="u" src="assets/voice/u.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('u').play();">ウ</button>
+      <audio id="e" src="assets/voice/e.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('e').play();">エ</button>
+      <audio id="o" src="assets/voice/o.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('o').play();">オ</button>
+      <audio id="ka" src="assets/voice/ka.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ka').play();">カ</button>
+      <audio id="ki" src="assets/voice/ki.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ki').play();">キ</button> 
+      <audio id="ku" src="assets/voice/ku.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ku').play();">ク</button>
+      <audio id="ke" src="assets/voice/ke.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ke').play();">ケ</button>
+      <audio id="ko" src="assets/voice/ko.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ko').play();">コ</button>
+      <audio id="sa" src="assets/voice/sa.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('sa').play();">サ</button>
+      <audio id="shi" src="assets/voice/shi.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('shi').play();">シ</button>
+      <audio id="su" src="assets/voice/su.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('su').play();">ス</button>
+      <audio id="se" src="assets/voice/se.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('se').play();">セ</button>
+      <audio id="so" src="assets/voice/so.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('so').play();">ソ</button>
+      <audio id="ta" src="assets/voice/ta.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ta').play();">タ</button>
+      <audio id="chi" src="assets/voice/chi.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('chi').play();">チ</button>
+      <audio id="tsu" src="assets/voice/tsu.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('tsu').play();">ツ</button>
+      <audio id="te" src="assets/voice/te.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('te').play();">テ</button>
+      <audio id="to" src="assets/voice/to.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('to').play();">ト</button>
+      <audio id="na" src="assets/voice/na.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('na').play();">ナ</button>
+      <audio id="ni" src="assets/voice/ni.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ni').play();">ニ</button>
+      <audio id="nu" src="assets/voice/nu.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('nu').play();">ヌ</button>
+      <audio id="ne" src="assets/voice/ne.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ne').play();">ネ</button>
+      <audio id="no" src="assets/voice/no.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('no').play();">ノ</button>
+      <audio id="ha" src="assets/voice/ha.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ha').play();">ハ</button>
+      <audio id="hi" src="assets/voice/hi.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('hi').play();">ヒ</button><audio id="fu" src="assets/voice/fu.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('fu').play();">フ</button>
+      <audio id="he" src="assets/voice/he.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('he').play();">ヘ</button>
+      <audio id="ho" src="assets/voice/ho.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ho').play();">ホ</button>
+      <audio id="ma" src="assets/voice/ma.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ma').play();">マ</button>
+            <audio id="mi" src="assets/voice/mi.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('mi').play();">ミ</button>
+                  <audio id="mu" src="assets/voice/mu.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('mu').play();">ム</button>
+                        <audio id="me" src="assets/voice/me.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('me').play();">メ</button>
+                              <audio id="mo" src="assets/voice/mo.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('mo').play();">モ</button>
+                                    <audio id="ya" src="assets/voice/ya.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ya').play();">ヤ</button>
+                                          <audio id="yu" src="assets/voice/yu.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('yu').play();">ユ</button>
+                                                <audio id="yo" src="assets/voice/yo.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('yo').play();">ヨ</button>
+                                                      <audio id="ra" src="assets/voice/ra.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ra').play();">ラ</button>
+                                                            <audio id="ri" src="assets/voice/ri.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ri').play();">リ</button>
+                                                                  <audio id="ru" src="assets/voice/ru.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ru').play();">ル</button>
+                                                                        <audio id="re" src="assets/voice/re.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('re').play();">レ</button>
+                                                                              <audio id="ro" src="assets/voice/ro.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ro').play();">ロ</button>
+                                                                                    <audio id="wa" src="assets/voice/wa.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('wa').play();">ワ</button>
+                                                                                          <audio id="wo" src="assets/voice/wo.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('wo').play();">ヲ</button>
+                                                                                                <audio id="n" src="assets/voice/n.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('n').play();">ン</button>
+                                                                                                                       <audio id="ga" src="assets/voice/ga.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ga').play();">ガ</button>
+                                                                                                                                              <audio id="gi" src="assets/voice/gi.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('gi').play();">ギ</button>
+                                                                                                                                                                     <audio id="gu" src="assets/voice/gu.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('gu').play();">グ</button>
+                                                                                                                                                                                            <audio id="ge" src="assets/voice/ge.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ge').play();">ゲ</button>
+                                                                                                                                                                                                                   <audio id="go" src="assets/voice/go.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('go').play();">ゴ</button>
+                                                                                                                                                                                                                                          <audio id="za" src="assets/voice/za.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('za').play();">ザ</button>
+                                                                                                                                                                                                                                                                 <audio id="ji" src="assets/voice/ji.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ji').play();">ジ</button>
+                                                                                                                                                                                                                                                                                        <audio id="zu" src="assets/voice/zu.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('zu').play();">ズ</button>
+                                                                                                                                                                                                                                                                                                               <audio id="ze" src="assets/voice/ze.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ze').play();">ゼ</button>
+                                                                                                                                                                                                                                                                                                                                      <audio id="zo" src="assets/voice/zo.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('zo').play();">ゾ</button>
+                                                                                                                                                                                                                                                                                                                                                             <audio id="da" src="assets/voice/da.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('da').play();">ダ</button>
+                                                                                                                                                                                                                                                                                                                                                                                    <audio id="dji" src="assets/voice/dji.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('dji').play();">ヂ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                           <audio id="dzu" src="assets/voice/dzu.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('dzu').play();">ヅ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                  <audio id="de" src="assets/voice/de.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('de').play();">デ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                         <audio id="do" src="assets/voice/do.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('do').play();">ド</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <audio id="ba" src="assets/voice/ba.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('ba').play();">バ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       <audio id="bi" src="assets/voice/bi.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('bi').play();">ビ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <audio id="bu" src="assets/voice/bu.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('bu').play();">ブ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <audio id="be" src="assets/voice/be.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('be').play();">ベ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <audio id="bo" src="assets/voice/bo.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('bo').play();">ボ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <audio id="pa" src="assets/voice/pa.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('pa').play();">パ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <audio id="pi" src="assets/voice/pi.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('pi').play();">ピ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <audio id="pu" src="assets/voice/pu.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('pu').play();">プ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <audio id="pe" src="assets/voice/pe.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('pe').play();">ペ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <audio id="po" src="assets/voice/po.wav" preload="auto"></audio> <button style="height:100px; width:100px; font-size:1.4vw;" onclick="document.getElementById('po').play();">ポ</button>
+      </p>
+    </center><center></center>
+    <p></p>
+    
+<center>
+</center>
+<center>
+  <p><a href="hiragana.html">Переключится на хирагану</a></p></center>
+<br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+  <!-- end .content --></div>
+  <div class="footer">
+ ©Семенов Виктор Анатольевич    <!-- end .footer --></div>
+  <!-- end .container --></div>
+  <script src="script.js"></script>
+</body>
+</html>
