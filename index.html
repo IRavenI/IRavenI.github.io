@@ -1,44 +1,113 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Главная страница</title>
-<style type="text/css">
-<!--
--->
-</style>
-<link href="style.css" rel="stylesheet" type="text/css" />
-<link rel="SHORTCUT ICON" href="assets/logo.png" type="image/png">
+    <meta charset="UTF-8">
+    <title>Интерактивная карта земель Эггрегора</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap" rel="stylesheet">
+    <style>
+        .container {
+            position: relative;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+	.merriweather-<uniquifier> {
+  	font-family: "Merriweather", serif;
+  	font-optical-sizing: auto;
+  	font-weight: <weight>;
+  	font-style: normal;
+  	font-variation-settings:
+    	"wdth" 100;
+	}
+
+        #main-map {
+            width: 100%;
+            height: auto;
+        }
+
+
+
+        .controls {
+            margin: 20px;
+            text-align: center;
+        }
+
+        /* Стили для интерактивных зон */
+        .clickable-area {
+            position: absolute;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .clickable-area:hover {
+            opacity: 0.3;
+            background: #00ff00;
+        }
+        .map-label {
+                position: absolute;
+                background: rgba(255, 255, 255, 0.8);
+                padding: 5px;
+                border-radius: 3px;
+                display: none;
+                pointer-events: none;
+                
+                /* Добавьте эти строки для шрифта */
+                font-family: 'Merriweather', serif; /* Пример фэнтези-шрифта */
+                font-size: 18px; 
+                color: #3a2a1e; /* Цвет как старинный пергамент */
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Легкая тень */
+            }
+    </style>
 </head>
-
 <body>
+    <div class="controls">
+        <label>
+            <input type="checkbox" id="showLabels" onchange="toggleLabels()">
+            Показать названия
+        </label>
+    </div>
 
-<div class="container">
-  <div class="header"><a href="index.html"><img src="assets/logo.png" alt="Место для логотипа" name="Insert_logo" width="100" height="100" class="fltlft" id="Insert_logo" display:block;" /></a> 
-    <!-- end .header -->Блог непутёвого япониста</div>
-  <div class="content">
-    <table width="100%" height="61" border="0" align="center" class="text-decoration-none">
-      <tr>
-        <th width="29%" class="MainMenuButton" scope="col"><a href="blogmap.html" class="text-decoration-none">Навигация по блогу</a></th>
-        <th width="39%" class="MainMenuButton" scope="col"><a href="resources.html" class="text-decoration-none">Полезные ресурсы</a></th>
-        <th width="32%" class="MainMenuButton" scope="col"><a href="aboutme.html" class="text-decoration-none">Рассылка</a></th>
-      </tr>
-    </table>
-    <p>&nbsp;</p>
-    <center>
-      <h1>Добро пожаловать на главную страницу!</h1>
-    </center>
-    <p>
-      <center>
-        <img src="assets/Main page/MainPageImage.jpg" alt="" width="1100" height="600" class="container" />
-      </center>
-    </p>
-    <p>Однажды, тихим июльским вечером, я решил, что пора - бы заняться чем - нибудь полезным. И сразу вспомнилась мне давняя мечта - научиться писать по-японски и понимать японскую речь. В данном блоге Вы можете шаг за шагом пройти со мной путь от абсолютного нуля, до гуру. Если вы всё же решились, то <span class="line-through">готовьтесь пройти через боль и страдания</span> давайте <a href="blog0.html">начнём</a>!</p>
-    <h1>&nbsp;</h1>
-    <p>&nbsp;</p>
-  <!-- end .content --></div>
-  <div class="footer">
- ©Семенов Виктор Анатольевич    <!-- end .footer --></div>
-  <!-- end .container --></div>
+    <div class="container">
+        <!-- Основное изображение карты -->
+        <img src="Eggraegor.png" id="main-map" usemap="#world-map">
+
+        <!-- Названия (замените координаты) -->
+        <div class="map-label" style="top: 5%; right: 45%">Норда</div>
+        <div class="map-label" style="top: 35%; left: 20%">Уэстиз</div>
+        <div class="map-label" style="top: 35%; left: 70%">Иста</div>
+        <div class="map-label" style="top: 70%; left: 45%">Сауз</div>
+        <div class="map-label" style="top: 75%; left: 68%">Ярнак</div>
+        <div class="map-label" style="top: 72%; left: 89%">Вирналь</div>
+
+        <!-- Интерактивные зоны (замените координаты и размеры) -->
+
+        <!--
+        <div class="clickable-area" 
+             style="top: 25%; left: 20%; width: 200px; height: 150px;"
+             onclick="navigateTo('norda.html')"></div>
+        -->
+         
+    </div>
+
+    <script>
+        function toggleLabels() {
+            const labels = document.querySelectorAll('.map-label');
+            const checkbox = document.getElementById('showLabels');
+            
+            labels.forEach(label => {
+                label.style.display = checkbox.checked ? 'block' : 'none';
+            });
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        // Можно добавить предзагрузку изображений для лучшей производительности
+        window.onload = function() {
+            // Инициализация при необходимости
+        }
+    </script>
 </body>
 </html>
