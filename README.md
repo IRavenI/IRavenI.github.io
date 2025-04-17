@@ -1,1 +1,1 @@
-# Map of Reign of Eggraegor
+# Map of Reigns of Eggraegor
