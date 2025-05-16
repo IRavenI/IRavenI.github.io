@@ -2,24 +2,50 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Интерактивная карта земель Эггрегора</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             margin: 0;
             padding: 0;
+            background: #2a2a2a;
         }
         
         .container {
             position: relative;
-            width: 100%;
+            width: 100vw;
             height: 100vh;
+            overflow: hidden;
         }
 
         #map {
             width: 100%;
             height: 100%;
+            position: relative;
+            z-index: 2;
+            background: transparent !important;
+        }
+
+        .map-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            filter: blur(50px) brightness(0.7);
+            transform: scale(1.1);
+        }
+
+        .map-background.active {
+            opacity: 1;
         }
 
         .map-label {
@@ -129,6 +155,42 @@
             pointer-events: none;
         }
 
+        /* Стили для анимации fade-dissolve */
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Контейнер для слоев карты */
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.5s ease-in-out;
+        }
+
         .region-indicator {
             position: fixed;
             bottom: 60px;
@@ -148,14 +210,31 @@
             border: 2px solid rgba(255, 255, 255, 0.7);
             background: rgba(100, 100, 255, 0.1);
             transition: background 0.3s;
+            cursor: pointer;
         }
 
         .detailed-region:hover {
             background: rgba(100, 100, 255, 0.2);
         }
+
+        .popup-content {
+            font-family: 'Merriweather', serif;
+            text-align: center;
+        }
+
+        .popup-content h3 {
+            margin: 0 0 10px 0;
+            color: #3a2a1e;
+        }
+
+        .popup-content p {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
+    <div id="world-background" class="map-background active" style="background-image: url('Eggraegor.png');"></div>
+    <div id="detail-background" class="map-background"></div>
     <div class="container">
         <div id="map"></div>
         <div class="controls">
@@ -172,274 +251,7 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        // Инициализация карты
-        const map = L.map('map', {
-            crs: L.CRS.Simple,
-            minZoom: -2,
-            maxZoom: 2
-        });
-
-        // Определение слоев карты
-        const worldLayer = L.layerGroup();
-        const istaDetailLayer = L.layerGroup();
-
-        // Основное изображение карты мира
-        const worldImageUrl = 'Eggraegor.png';
-        const worldBounds = [[0, 0], [1000, 1000]];
-        const worldImage = L.imageOverlay(worldImageUrl, worldBounds).addTo(worldLayer);
-
-        // Детальное изображение Исты
-        const istaDetailImageUrl = 'Ista (Left Side).png';
-        const istaDetailBounds = [[400, 400], [800, 600]]; // Примерные границы, настройте под ваше изображение
-        const istaDetailImage = L.imageOverlay(istaDetailImageUrl, istaDetailBounds).addTo(istaDetailLayer);
-
-        // Добавляем мировой слой на карту
-        worldLayer.addTo(map);
-        map.fitBounds(worldBounds);
-
-        // Определение локаций
-        const locations = [
-            { name: "Норда", coordinates: [950, 534], type: "continent", description: "Северные земли Эггрегора, мистические и холодные" },
-            { name: "Уэстиз", coordinates: [550, 200], type: "continent", description: "Западные территории, владения Империи Киматар" },
-            { name: "Иста", coordinates: [600, 700], type: "continent", description: "Восточные земли рядом с Барьером" },
-            { name: "Сауз", coordinates: [240, 468], type: "continent", description: "Южные территории, заполненные пустыней" },
-            { name: "Ярнак", coordinates: [210, 705], type: "continent", description: "Тропические архипелаги" },
-            { name: "Вирналь", coordinates: [245, 920], type: "continent", description: "Таинственный остров фей" }
-        ];
-
-        // Добавляем триггер-зону для Исты
-        const istaDetailTrigger = {
-            center: [635, 490],
-            radius: 50  // Радиус зоны активации в пикселях
-        };
-
-        // Создание кастомных иконок
-        const cityIcon = L.divIcon({
-            className: 'custom-marker',
-            html: '<i></i>',
-            iconSize: [24, 24],
-            iconAnchor: [12, 12],
-            popupAnchor: [0, -12]
-        });
-
-        // Создание маркеров и подписей
-        const markers = new Map();
-        const labels = new Map();
-
-        locations.forEach(location => {
-            if (location.type === "city") {
-                // Создание маркера только для городов
-                const marker = L.marker(location.coordinates, { icon: cityIcon })
-                    .bindPopup(`
-                        <div class="location-popup">
-                            <h3>${location.name}</h3>
-                            <p>${location.description}</p>
-                        </div>
-                    `)
-                    .addTo(worldLayer);
-                
-                markers.set(location.name, marker);
-
-                // Создание подписи для города
-                const cityLabel = L.divIcon({
-                    className: 'map-label',
-                    html: `<div>${location.name}</div>`,
-                    iconSize: [100, 40],
-                    iconAnchor: [50, -10]
-                });
-
-                const labelMarker = L.marker(location.coordinates, {
-                    icon: cityLabel,
-                    interactive: false
-                }).addTo(worldLayer);
-                
-                labels.set(location.name, labelMarker);
-            } else {
-                // Создание подписи для континента
-                const continentLabel = L.divIcon({
-                    className: 'continent-label',
-                    html: `<div>${location.name}</div>`,
-                    iconSize: [150, 50],
-                    iconAnchor: [75, 25]
-                });
-
-                const labelMarker = L.marker(location.coordinates, {
-                    icon: continentLabel,
-                    interactive: true
-                })
-                .bindPopup(`
-                    <div class="location-popup">
-                        <h3>${location.name}</h3>
-                        <p>${location.description}</p>
-                    </div>
-                `)
-                .addTo(worldLayer);
-                
-                labels.set(location.name, labelMarker);
-            }
-        });
-
-        // Функция переключения отображения подписей
-        document.getElementById('showLabels').addEventListener('change', function(e) {
-            const isChecked = e.target.checked;
-            labels.forEach(label => {
-                if (isChecked) {
-                    label.addTo(worldLayer);
-                } else {
-                    label.remove();
-                }
-            });
-        });
-
-        // Обработка зума и переключения слоев
-        const returnToWorldBtn = document.getElementById('returnToWorld');
-        let isDetailedView = false;
-
-        map.on('zoomend moveend', function() {
-            const zoom = map.getZoom();
-            const center = map.getCenter();
-            const distance = Math.sqrt(
-                Math.pow(center.lat - istaDetailTrigger.center[0], 2) +
-                Math.pow(center.lng - istaDetailTrigger.center[1], 2)
-            );
-
-            if (zoom > 0 && distance < istaDetailTrigger.radius && !isDetailedView) {
-                // Переключаемся на детальный вид
-                worldLayer.remove();
-                istaDetailLayer.addTo(map);
-                returnToWorldBtn.classList.remove('hidden');
-                isDetailedView = true;
-            } else if ((zoom <= 0 || distance >= istaDetailTrigger.radius) && isDetailedView) {
-                // Возвращаемся к мировой карте
-                returnToWorld();
-            }
-        });
-
-        // Определение детальных регионов
-        const detailedRegions = [
-            {
-                name: "Западная часть Исты",
-                bounds: [[585, 440], [685, 540]], // Область для отображения рамки на мировой карте
-                detailBounds: [[0, 0], [1000, 1000]],
-                imageUrl: 'Ista (Left Side).png',
-                id: 'west-ista' // Уникальный идентификатор для URL
-            }
-        ];
-
-        // Инициализация состояния
-        let currentDetailedRegion = null;
-
-        // Создаем слои для каждого региона
-        const detailLayers = new Map();
-        detailedRegions.forEach(region => {
-            const layer = L.layerGroup();
-            const detailImage = L.imageOverlay(region.imageUrl, region.detailBounds).addTo(layer);
-            detailLayers.set(region.name, layer);
-
-            // Добавляем прямоугольник-индикатор детальной области
-            const rectangle = L.rectangle(region.bounds, {
-                className: 'detailed-region',
-                color: 'transparent',
-                weight: 2
-            }).addTo(worldLayer);
-
-            // Добавляем обработчики событий для прямоугольника
-            rectangle.on('mouseover', function() {
-                document.getElementById('regionIndicator').textContent = region.name;
-                document.getElementById('regionIndicator').style.display = 'block';
-            });
-
-            rectangle.on('mouseout', function() {
-                document.getElementById('regionIndicator').style.display = 'none';
-            });
-
-            rectangle.on('click', function() {
-                showDetailedRegion(region.name);
-            });
-        });
-
-        // Функция показа детального вида региона
-        function showDetailedRegion(regionName) {
-            const region = detailedRegions.find(r => r.name === regionName);
-            if (!region) return;
-
-            worldLayer.remove();
-            detailLayers.get(regionName).addTo(map);
-            map.fitBounds(region.detailBounds, {
-                animate: true,
-                duration: 1
-            });
-            returnToWorldBtn.classList.remove('hidden');
-            currentDetailedRegion = regionName;
-
-            // Добавляем запись в историю браузера
-            history.pushState({ region: region.id }, '', `#${region.id}`);
-        }
-
-        // Функция возврата к мировой карте
-        function returnToWorld() {
-            if (currentDetailedRegion) {
-                detailLayers.get(currentDetailedRegion).remove();
-            }
-            worldLayer.addTo(map);
-            map.fitBounds(worldBounds, {
-                animate: true,
-                duration: 1
-            });
-            returnToWorldBtn.classList.add('hidden');
-            currentDetailedRegion = null;
-
-            // Очищаем хэш в URL
-            history.pushState(null, '', window.location.pathname);
-        }
-
-        // Добавляем обработчик для кнопки возврата
-        returnToWorldBtn.addEventListener('click', returnToWorld);
-
-        // Обработчик кнопки "назад" в браузере
-        window.addEventListener('popstate', function(event) {
-            if (event.state && event.state.region) {
-                // Если в истории есть регион, показываем его
-                const region = detailedRegions.find(r => r.id === event.state.region);
-                if (region) {
-                    showDetailedRegion(region.name);
-                }
-            } else {
-                // Если нет региона в истории, возвращаемся к мировой карте
-                returnToWorld();
-            }
-        });
-
-        // Проверяем URL при загрузке страницы
-        window.addEventListener('load', function() {
-            const hash = window.location.hash.slice(1);
-            if (hash) {
-                const region = detailedRegions.find(r => r.id === hash);
-                if (region) {
-                    showDetailedRegion(region.name);
-                }
-            }
-        });
-
-        // Инициализация карты
-        worldLayer.addTo(map);
-        map.fitBounds(worldBounds);
-
-        // Отслеживание координат курсора
-        const coordinatesElement = document.getElementById('coordinates');
-        
-        map.on('mousemove', function(e) {
-            const coordinates = e.latlng;
-            coordinatesElement.innerHTML = `Координаты: [${Math.round(coordinates.lat)}, ${Math.round(coordinates.lng)}]`;
-        });
-
-        // Обработчик клика для вывода координат в консоль
-        map.on('click', function(e) {
-            const coordinates = e.latlng;
-            const roundedCoords = [Math.round(coordinates.lat), Math.round(coordinates.lng)];
-            console.log(`Координаты точки: [${roundedCoords[0]}, ${roundedCoords[1]}]`);
-        });
-    </script>
+    <script src="js/regions.js"></script>
+    <script src="js/map.js"></script>
 </body>
 </html>
