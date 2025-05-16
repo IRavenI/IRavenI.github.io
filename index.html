@@ -76,6 +76,28 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
+        .controls button {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px;
+            background: #4a4a4a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: Georgia, serif;
+            transition: background 0.3s;
+        }
+
+        .controls button:hover {
+            background: #666;
+        }
+
+        .controls button.hidden {
+            display: none;
+        }
+
         /* Стили для кастомного маркера */
         .custom-marker {
             background: none;
@@ -106,6 +128,31 @@
             z-index: 1000;
             pointer-events: none;
         }
+
+        .region-indicator {
+            position: fixed;
+            bottom: 60px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Georgia, serif;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            pointer-events: none;
+            display: none;
+        }
+
+        .detailed-region {
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            background: rgba(100, 100, 255, 0.1);
+            transition: background 0.3s;
+        }
+
+        .detailed-region:hover {
+            background: rgba(100, 100, 255, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -116,10 +163,12 @@
                 <input type="checkbox" id="showLabels" checked> 
                 Показать названия
             </label>
+            <button id="returnToWorld" class="hidden">Вернуться на карту мира</button>
         </div>
         <div id="coordinates" class="coordinates-display">
             Координаты: [0, 0]
         </div>
+        <div id="regionIndicator" class="region-indicator"></div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -131,15 +180,25 @@
             maxZoom: 2
         });
 
-        // Определение размеров изображения и границ
-        const imageUrl = 'Eggraegor.png';
-        const bounds = [[0, 0], [1000, 1000]];
-        const image = L.imageOverlay(imageUrl, bounds).addTo(map);
+        // Определение слоев карты
+        const worldLayer = L.layerGroup();
+        const istaDetailLayer = L.layerGroup();
 
-        // Центрирование карты
-        map.fitBounds(bounds);
+        // Основное изображение карты мира
+        const worldImageUrl = 'Eggraegor.png';
+        const worldBounds = [[0, 0], [1000, 1000]];
+        const worldImage = L.imageOverlay(worldImageUrl, worldBounds).addTo(worldLayer);
 
-        // Определение локаций с типами
+        // Детальное изображение Исты
+        const istaDetailImageUrl = 'Ista (Left Side).png';
+        const istaDetailBounds = [[400, 400], [800, 600]]; // Примерные границы, настройте под ваше изображение
+        const istaDetailImage = L.imageOverlay(istaDetailImageUrl, istaDetailBounds).addTo(istaDetailLayer);
+
+        // Добавляем мировой слой на карту
+        worldLayer.addTo(map);
+        map.fitBounds(worldBounds);
+
+        // Определение локаций
         const locations = [
             { name: "Норда", coordinates: [950, 534], type: "continent", description: "Северные земли Эггрегора, мистические и холодные" },
             { name: "Уэстиз", coordinates: [550, 200], type: "continent", description: "Западные территории, владения Империи Киматар" },
@@ -148,6 +207,12 @@
             { name: "Ярнак", coordinates: [210, 705], type: "continent", description: "Тропические архипелаги" },
             { name: "Вирналь", coordinates: [245, 920], type: "continent", description: "Таинственный остров фей" }
         ];
+
+        // Добавляем триггер-зону для Исты
+        const istaDetailTrigger = {
+            center: [635, 490],
+            radius: 50  // Радиус зоны активации в пикселях
+        };
 
         // Создание кастомных иконок
         const cityIcon = L.divIcon({
@@ -172,7 +237,7 @@
                             <p>${location.description}</p>
                         </div>
                     `)
-                    .addTo(map);
+                    .addTo(worldLayer);
                 
                 markers.set(location.name, marker);
 
@@ -187,7 +252,7 @@
                 const labelMarker = L.marker(location.coordinates, {
                     icon: cityLabel,
                     interactive: false
-                }).addTo(map);
+                }).addTo(worldLayer);
                 
                 labels.set(location.name, labelMarker);
             } else {
@@ -209,7 +274,7 @@
                         <p>${location.description}</p>
                     </div>
                 `)
-                .addTo(map);
+                .addTo(worldLayer);
                 
                 labels.set(location.name, labelMarker);
             }
@@ -220,12 +285,146 @@
             const isChecked = e.target.checked;
             labels.forEach(label => {
                 if (isChecked) {
-                    label.addTo(map);
+                    label.addTo(worldLayer);
                 } else {
                     label.remove();
                 }
             });
         });
+
+        // Обработка зума и переключения слоев
+        const returnToWorldBtn = document.getElementById('returnToWorld');
+        let isDetailedView = false;
+
+        map.on('zoomend moveend', function() {
+            const zoom = map.getZoom();
+            const center = map.getCenter();
+            const distance = Math.sqrt(
+                Math.pow(center.lat - istaDetailTrigger.center[0], 2) +
+                Math.pow(center.lng - istaDetailTrigger.center[1], 2)
+            );
+
+            if (zoom > 0 && distance < istaDetailTrigger.radius && !isDetailedView) {
+                // Переключаемся на детальный вид
+                worldLayer.remove();
+                istaDetailLayer.addTo(map);
+                returnToWorldBtn.classList.remove('hidden');
+                isDetailedView = true;
+            } else if ((zoom <= 0 || distance >= istaDetailTrigger.radius) && isDetailedView) {
+                // Возвращаемся к мировой карте
+                returnToWorld();
+            }
+        });
+
+        // Определение детальных регионов
+        const detailedRegions = [
+            {
+                name: "Западная часть Исты",
+                bounds: [[585, 440], [685, 540]], // Область для отображения рамки на мировой карте
+                detailBounds: [[0, 0], [1000, 1000]],
+                imageUrl: 'Ista (Left Side).png',
+                id: 'west-ista' // Уникальный идентификатор для URL
+            }
+        ];
+
+        // Инициализация состояния
+        let currentDetailedRegion = null;
+
+        // Создаем слои для каждого региона
+        const detailLayers = new Map();
+        detailedRegions.forEach(region => {
+            const layer = L.layerGroup();
+            const detailImage = L.imageOverlay(region.imageUrl, region.detailBounds).addTo(layer);
+            detailLayers.set(region.name, layer);
+
+            // Добавляем прямоугольник-индикатор детальной области
+            const rectangle = L.rectangle(region.bounds, {
+                className: 'detailed-region',
+                color: 'transparent',
+                weight: 2
+            }).addTo(worldLayer);
+
+            // Добавляем обработчики событий для прямоугольника
+            rectangle.on('mouseover', function() {
+                document.getElementById('regionIndicator').textContent = region.name;
+                document.getElementById('regionIndicator').style.display = 'block';
+            });
+
+            rectangle.on('mouseout', function() {
+                document.getElementById('regionIndicator').style.display = 'none';
+            });
+
+            rectangle.on('click', function() {
+                showDetailedRegion(region.name);
+            });
+        });
+
+        // Функция показа детального вида региона
+        function showDetailedRegion(regionName) {
+            const region = detailedRegions.find(r => r.name === regionName);
+            if (!region) return;
+
+            worldLayer.remove();
+            detailLayers.get(regionName).addTo(map);
+            map.fitBounds(region.detailBounds, {
+                animate: true,
+                duration: 1
+            });
+            returnToWorldBtn.classList.remove('hidden');
+            currentDetailedRegion = regionName;
+
+            // Добавляем запись в историю браузера
+            history.pushState({ region: region.id }, '', `#${region.id}`);
+        }
+
+        // Функция возврата к мировой карте
+        function returnToWorld() {
+            if (currentDetailedRegion) {
+                detailLayers.get(currentDetailedRegion).remove();
+            }
+            worldLayer.addTo(map);
+            map.fitBounds(worldBounds, {
+                animate: true,
+                duration: 1
+            });
+            returnToWorldBtn.classList.add('hidden');
+            currentDetailedRegion = null;
+
+            // Очищаем хэш в URL
+            history.pushState(null, '', window.location.pathname);
+        }
+
+        // Добавляем обработчик для кнопки возврата
+        returnToWorldBtn.addEventListener('click', returnToWorld);
+
+        // Обработчик кнопки "назад" в браузере
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.region) {
+                // Если в истории есть регион, показываем его
+                const region = detailedRegions.find(r => r.id === event.state.region);
+                if (region) {
+                    showDetailedRegion(region.name);
+                }
+            } else {
+                // Если нет региона в истории, возвращаемся к мировой карте
+                returnToWorld();
+            }
+        });
+
+        // Проверяем URL при загрузке страницы
+        window.addEventListener('load', function() {
+            const hash = window.location.hash.slice(1);
+            if (hash) {
+                const region = detailedRegions.find(r => r.id === hash);
+                if (region) {
+                    showDetailedRegion(region.name);
+                }
+            }
+        });
+
+        // Инициализация карты
+        worldLayer.addTo(map);
+        map.fitBounds(worldBounds);
 
         // Отслеживание координат курсора
         const coordinatesElement = document.getElementById('coordinates');
@@ -235,11 +434,7 @@
             coordinatesElement.innerHTML = `Координаты: [${Math.round(coordinates.lat)}, ${Math.round(coordinates.lng)}]`;
         });
 
-        map.on('mouseout', function() {
-            coordinatesElement.innerHTML = 'Координаты: [0, 0]';
-        });
-
-        // Добавляем обработчик клика для удобного копирования координат в консоль
+        // Обработчик клика для вывода координат в консоль
         map.on('click', function(e) {
             const coordinates = e.latlng;
             const roundedCoords = [Math.round(coordinates.lat), Math.round(coordinates.lng)];
