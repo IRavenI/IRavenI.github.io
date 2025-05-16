@@ -30,21 +30,25 @@
         }
 
         .continent-label {
-            font-family: 'Merriweather', serif;
-            font-size: 24px;
-            color: #2a1810;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            font-family: Georgia, serif;
+            font-size: 28px;
+            color: white;
             text-transform: uppercase;
             letter-spacing: 2px;
             background: none !important;
             border: none !important;
             font-weight: 700;
+            -webkit-text-stroke: 1px black;
+            text-shadow: 
+                1px 1px 0 #000,
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000;
         }
 
         .continent-label div {
-            background: rgba(255, 255, 255, 0.7);
+            background: none;
             padding: 5px 10px;
-            border-radius: 5px;
         }
 
         .location-popup {
@@ -137,12 +141,12 @@
 
         // Определение локаций с типами
         const locations = [
-            { name: "Норда", coordinates: [950, 534], type: "continent", description: "Северные земли Эггрегора" },
-            { name: "Уэстиз", coordinates: [550, 200], type: "continent", description: "Западные территории" },
-            { name: "Иста", coordinates: [600, 700], type: "continent", description: "Восточные земли" },
-            { name: "Сауз", coordinates: [240, 468], type: "continent", description: "Южные территории" },
-            { name: "Ярнак", coordinates: [210, 705], type: "continent", description: "Древний город Ярнак" },
-            { name: "Вирналь", coordinates: [245, 920], type: "continent", description: "Таинственный Вирналь" }
+            { name: "Норда", coordinates: [950, 534], type: "continent", description: "Северные земли Эггрегора, мистические и холодные" },
+            { name: "Уэстиз", coordinates: [550, 200], type: "continent", description: "Западные территории, владения Империи Киматар" },
+            { name: "Иста", coordinates: [600, 700], type: "continent", description: "Восточные земли рядом с Барьером" },
+            { name: "Сауз", coordinates: [240, 468], type: "continent", description: "Южные территории, заполненные пустыней" },
+            { name: "Ярнак", coordinates: [210, 705], type: "continent", description: "Тропические архипелаги" },
+            { name: "Вирналь", coordinates: [245, 920], type: "continent", description: "Таинственный остров фей" }
         ];
 
         // Создание кастомных иконок
