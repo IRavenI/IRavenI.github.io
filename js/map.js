@@ -19,7 +19,8 @@ function initMap() {
             zoomControl: false,
             zoomSnap: 0.25,    // Шаг зума
             zoomDelta: 0.25,   // Шаг при использовании колесика мыши
-            wheelDebounceTime: 40  // Задержка между зумами при прокрутке
+            wheelDebounceTime: 40,  // Задержка между зумами при прокрутке
+            attributionControl: false  // Отключаем атрибуцию
         });
 
         // Добавляем элементы управления
