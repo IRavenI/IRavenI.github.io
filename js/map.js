@@ -16,12 +16,17 @@ function initMap() {
             crs: L.CRS.Simple,
             minZoom: -2,
             maxZoom: 2,
-            zoomControl: false
+            zoomControl: false,
+            zoomSnap: 0.25,    // Шаг зума
+            zoomDelta: 0.25,   // Шаг при использовании колесика мыши
+            wheelDebounceTime: 40  // Задержка между зумами при прокрутке
         });
 
         // Добавляем элементы управления
         L.control.zoom({
-            position: 'bottomright'
+            position: 'bottomright',
+            zoomInText: '+',
+            zoomOutText: '-'
         }).addTo(map);
 
         // Устанавливаем границы карты
