@@ -131,32 +131,46 @@ function showRegionDetails(region) {
     const detailRegion = detailedRegions.find(r => r.id === region.id);
     
     if (detailRegion) {
-        // Сохраняем текущий зум и центр
-        const currentZoom = map.getZoom();
-        const currentCenter = map.getCenter();
+        // Добавляем анимацию исчезновения
+        map._container.classList.add('fade-out');
         
-        // Скрываем маркеры континентов
-        markers.forEach(marker => {
-            marker.remove();
-        });
-        
-        // Устанавливаем новые границы
-        map.fitBounds(detailRegion.detailBounds);
-        
-        // Добавляем детальную карту
-        if (currentOverlay) {
-            map.removeLayer(currentOverlay);
-        }
-        currentOverlay = L.imageOverlay(detailRegion.imageUrl, detailRegion.detailBounds).addTo(map);
-        
-        // Обновляем фон
-        updateBackground(detailRegion.imageUrl);
-        
-        // Показываем кнопку возврата
-        document.getElementById('returnToWorld').classList.remove('hidden');
-        
-        // Обновляем индикатор региона
-        updateRegionIndicator(region.name);
+        setTimeout(() => {
+            // Сохраняем текущий зум и центр
+            const currentZoom = map.getZoom();
+            const currentCenter = map.getCenter();
+            
+            // Скрываем маркеры континентов
+            markers.forEach(marker => {
+                marker.remove();
+            });
+            
+            // Устанавливаем новые границы
+            map.fitBounds(detailRegion.detailBounds);
+            
+            // Добавляем детальную карту
+            if (currentOverlay) {
+                map.removeLayer(currentOverlay);
+            }
+            currentOverlay = L.imageOverlay(detailRegion.imageUrl, detailRegion.detailBounds).addTo(map);
+            
+            // Обновляем фон
+            updateBackground(detailRegion.imageUrl);
+            
+            // Показываем кнопку возврата
+            document.getElementById('returnToWorld').classList.remove('hidden');
+            
+            // Обновляем индикатор региона
+            updateRegionIndicator(region.name);
+            
+            // Убираем класс анимации исчезновения и добавляем класс появления
+            map._container.classList.remove('fade-out');
+            map._container.classList.add('fade-in');
+            
+            // Убираем класс анимации появления через время анимации
+            setTimeout(() => {
+                map._container.classList.remove('fade-in');
+            }, 500);
+        }, 500);
     }
 }
 
@@ -176,36 +190,50 @@ function updateBackground(imageUrl) {
 
 // Возврат к карте мира
 function returnToWorldMap() {
-    if (currentOverlay) {
-        map.removeLayer(currentOverlay);
-        currentOverlay = null;
-    }
+    // Добавляем анимацию исчезновения
+    map._container.classList.add('fade-out');
     
-    // Возвращаемся к исходному виду
-    map.fitBounds(worldBounds);
-    
-    // Показываем маркеры континентов обратно
-    markers.forEach(marker => {
-        marker.addTo(map);
-    });
-    
-    // Обновляем фон
-    const worldBackground = document.getElementById('world-background');
-    const detailBackground = document.getElementById('detail-background');
-    
-    if (currentBackground) {
-        currentBackground.classList.remove('active');
-    }
-    worldBackground.classList.add('active');
-    currentBackground = worldBackground;
-    
-    // Скрываем кнопку возврата
-    document.getElementById('returnToWorld').classList.add('hidden');
-    
-    // Очищаем индикатор региона
-    updateRegionIndicator('');
-    
-    currentRegion = null;
+    setTimeout(() => {
+        if (currentOverlay) {
+            map.removeLayer(currentOverlay);
+            currentOverlay = null;
+        }
+        
+        // Возвращаемся к исходному виду
+        map.fitBounds(worldBounds);
+        
+        // Показываем маркеры континентов обратно
+        markers.forEach(marker => {
+            marker.addTo(map);
+        });
+        
+        // Обновляем фон
+        const worldBackground = document.getElementById('world-background');
+        const detailBackground = document.getElementById('detail-background');
+        
+        if (currentBackground) {
+            currentBackground.classList.remove('active');
+        }
+        worldBackground.classList.add('active');
+        currentBackground = worldBackground;
+        
+        // Скрываем кнопку возврата
+        document.getElementById('returnToWorld').classList.add('hidden');
+        
+        // Очищаем индикатор региона
+        updateRegionIndicator('');
+        
+        currentRegion = null;
+        
+        // Убираем класс анимации исчезновения и добавляем класс появления
+        map._container.classList.remove('fade-out');
+        map._container.classList.add('fade-in');
+        
+        // Убираем класс анимации появления через время анимации
+        setTimeout(() => {
+            map._container.classList.remove('fade-in');
+        }, 500);
+    }, 500);
 }
 
 // Обновление координат
